@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +24,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
@@ -104,7 +105,7 @@ private fun LauncherScreen(apps: List<LaunchableApp>, onLaunch: (String) -> Unit
                     items(apps, key = { it.packageName }) { app -> AppTile(app, onLaunch) }
                 }
                 GlassBar(Modifier.fillMaxWidth().clickable { drawerOpen = false }) {
-                    Text("Back to home", color = Color.White, modifier = Modifier.align(Alignment.Center))
+                    Text("Back to home", color = Color.White, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 }
             }
         } else {
@@ -122,13 +123,8 @@ private fun LauncherScreen(apps: List<LaunchableApp>, onLaunch: (String) -> Unit
                     Icon(Icons.Default.Apps, contentDescription = "Open app drawer", tint = Color(0xFFB8C7FF))
                 }
                 Spacer(Modifier.height(14.dp))
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    apps.take(4).forEach { app ->
-                        Box(Modifier.weight(1f)) { AppTile(app, onLaunch) }
-                    }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    apps.take(4).forEach { app -> Box(Modifier.weight(1f)) { AppTile(app, onLaunch) } }
                 }
             }
         }
@@ -136,7 +132,7 @@ private fun LauncherScreen(apps: List<LaunchableApp>, onLaunch: (String) -> Unit
 }
 
 @Composable
-private fun GlassBar(modifier: Modifier = Modifier, content: @Composable Row.() -> Unit) {
+private fun GlassBar(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
     Row(
         modifier = modifier.clip(RoundedCornerShape(28.dp))
             .background(Color.White.copy(alpha = 0.10f))
@@ -160,7 +156,7 @@ private fun AppTile(app: LaunchableApp, onLaunch: (String) -> Unit) {
             color = Color.White.copy(alpha = 0.10f)
         ) {
             Box(contentAlignment = Alignment.Center) {
-                androidx.compose.foundation.Image(
+                Image(
                     painter = remember(app.packageName) { androidx.compose.ui.graphics.painter.DrawablePainter(app.icon) },
                     contentDescription = app.label,
                     modifier = Modifier.size(36.dp)

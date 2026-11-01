@@ -4,9 +4,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 
 data class LaunchableApp(val label: String, val packageName: String, val icon: android.graphics.drawable.Drawable)
 
@@ -156,9 +157,11 @@ private fun AppTile(app: LaunchableApp, onLaunch: (String) -> Unit) {
             color = Color.White.copy(alpha = 0.10f)
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Image(
-                    painter = remember(app.packageName) { androidx.compose.ui.graphics.painter.DrawablePainter(app.icon) },
-                    contentDescription = app.label,
+                AndroidView(
+                    factory = { context -> ImageView(context).apply {
+                        setImageDrawable(app.icon)
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                    } },
                     modifier = Modifier.size(36.dp)
                 )
             }
